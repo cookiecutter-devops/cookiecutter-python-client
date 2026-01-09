@@ -37,22 +37,37 @@ class shellmain(object):
     def get_subcommand_parser(self):
         parser = self.get_base_parse()
         subparser= parser.add_subparsers(metavar='<command>')
-        module_path = '{}.{}.meters'.format(self.package_name, self.api_version)
-        sub_modules = self.import_modules(module_path)
-        for fn_name in (func for func in dir(sub_modules) if func.startswith('do_')):
-            command = fn_name[3:].replace('_','-')
-            callback = getattr(sub_modules,fn_name)
-            desc=callback.__doc__ or ''
-            help=desc.strip()
-            arguments = getattr(callback,'arguments',[])
-            subparser_s = subparser.add_parser(
-                                             command,
-                                             description=desc,
-                                             add_help=False
-                                            )
-            for (args,kwargs) in arguments:
-                subparser_s.add_argument(*args, **kwargs)
-            subparser_s.set_defaults(func=callback)
+
+        # Get the path to the api_version directory
+        api_module_path = '{}.{}'.format(self.package_name, self.api_version)
+        api_module = importlib.import_module(api_module_path)
+        api_dir = os.path.dirname(api_module.__file__)
+
+        # Iterate through all .py files in the api_version directory
+        for filename in os.listdir(api_dir):
+            if filename.endswith('.py') and filename != '__init__.py':
+                # Get the module name without the .py extension
+                module_name = filename[:-3]
+                # Import the module
+                module_path = '{}.{}'.format(api_module_path, module_name)
+                sub_module = self.import_modules(module_path)
+
+                # Process all do_* functions in the module
+                for fn_name in (func for func in dir(sub_module) if func.startswith('do_')):
+                    command = fn_name[3:].replace('_','-')
+                    callback = getattr(sub_module, fn_name)
+                    desc = callback.__doc__ or ''
+                    help_text = desc.strip()
+                    arguments = getattr(callback, 'arguments', [])
+                    subparser_s = subparser.add_parser(
+                                                     command,
+                                                     description=desc,
+                                                     add_help=False
+                                                    )
+                    for (args, kwargs) in arguments:
+                        subparser_s.add_argument(*args, **kwargs)
+                    subparser_s.set_defaults(func=callback)
+
         return parser
 
     def parse_args(self,argv):

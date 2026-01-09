@@ -8,6 +8,7 @@ setup(
     license='MIT',
     install_requires=[
         'requests',
+        'prettytable'
     ],
     entry_points={
         'console_scripts': [

@@ -10,4 +10,4 @@ from {{cookiecutter.package_name}}.util import args
 def do_sample_list(args):
     url='http://localhost:8777/{{cookiecutter.api_version}}/meters/%s?limit=%s' %(args.meter,args.limit)
     response = requests.get(url)
-    print response.json()
+    print(response.json())
