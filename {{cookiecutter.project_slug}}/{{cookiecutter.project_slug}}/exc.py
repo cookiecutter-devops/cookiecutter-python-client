@@ -1,5 +1,6 @@
 class BaseException(Exception):
-    """ An  error occurred """
+    """An  error occurred"""
+
     def __init__(self, message=None):
         self.message = message
 
@@ -8,4 +9,4 @@ class BaseException(Exception):
 
 
 class CommandError(BaseException):
-    """ Invalid usage of CLI. """
+    """Invalid usage of CLI."""
