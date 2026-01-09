@@ -1,0 +1,8 @@
+{
+  "project_name": "python-client",
+  "package_name": "{{cookiecutter.project_name}}",
+  "api_version": "v2",
+  "command_name": "{{cookiecutter.project_name}}",
+  "version": "0.1",
+  "description": "Python client for API"
+}
