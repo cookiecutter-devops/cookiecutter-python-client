@@ -5,7 +5,7 @@ import requests
 import json
 import requests
 from datetime import datetime
-from {{cookiecutter.package_name}}.util import args, print_list
+from {{cookiecutter.package_name}}.util import args, print_list, print_dict
 
 REGISTRY_URL = 'http://localhost:5000'
 
