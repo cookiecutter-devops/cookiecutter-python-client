@@ -1,8 +1,22 @@
 {
+  "author_name": "Someone",
+  "author_email": "someone@somewhere.com",
+  "version": "0.1",
   "project_name": "python-client",
-  "package_name": "{{cookiecutter.project_name}}",
+  "project_slug": "{{cookiecutter.project_name.strip().lower().replace(' ', '_').replace('-', '_')}}",
+  "package_name_long": "Python CLI Boilerplate",
+  "package_name": "{{ cookiecutter.package_name_long.lower().replace(' ', '_').replace('-', '_') }}",
+  "git": "y",
+  "dockerfile": "y",
+  "open_source_license": [
+    "MIT license",
+    "BSD license",
+    "ISC license",
+    "Apache Software License 2.0",
+    "GNU General Public License v3",
+    "Not open source"
+  ],
   "api_version": "v2",
   "command_name": "{{cookiecutter.project_name}}",
-  "version": "0.1",
   "description": "Python client for API"
 }

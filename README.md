@@ -9,8 +9,6 @@
 pip install cookiecutter
 
 cookiecutter gh:cookiecutter-devops/cookiecutter-python-client
-
-
 ```
 
 

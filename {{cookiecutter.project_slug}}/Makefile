@@ -21,6 +21,16 @@ venv: # create a virtual env
 install: # install app dependencies for development
 	@pip install -e . -r requirements/dev.txt
 
+pre-commit: # install pre-commit hooks
+	@echo -e "\nInstalling pre-commit hook..."
+	@pre-commit install
+
+docs: # Install documentation related dependencies.
+	@pip install -r requirements/docs.txt
+
+serve-docs: # serve docs on localhost
+	@mkdocs serve -f docs/mkdocs.yml
+
 distributions: # create distribution wheel and zip for PyPI
 	@pip install -r requirements/publish.txt
 	@python3 setup.py sdist bdist_wheel
