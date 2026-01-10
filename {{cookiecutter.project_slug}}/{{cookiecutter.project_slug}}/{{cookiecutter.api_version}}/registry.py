@@ -5,16 +5,16 @@ import requests
 import json
 import requests
 from datetime import datetime
-from {{cookiecutter.package_name}}.util import args, print_list, print_dict,make_size_human_readable
+from {{cookiecutter.package_name}}.util import env, args, print_list, print_dict,make_size_human_readable
 
-REGISTRY_URL = 'http://localhost:5000'
 
+API_URL = env("API_URL", default="http://localhost:5000")
 
 def _get_image_update_time(image_name, tag):
     """
     通过解析manifest中的历史记录来获取镜像的创建时间
     """
-    manifest_url = f'{REGISTRY_URL}/v2/{image_name}/manifests/{tag}'
+    manifest_url = f'{API_URL}/v2/{image_name}/manifests/{tag}'
     headers = {'Accept': 'application/vnd.docker.distribution.manifest.v1+json'}
     try:
         response = requests.get(manifest_url, headers=headers)
@@ -33,7 +33,7 @@ def _get_image_update_time(image_name, tag):
 def _registry_image_tags_list(args):
     """List all images with their tags in docker registry."""
     # 获取所有仓库
-    catalog_url = f'{REGISTRY_URL}/v2/_catalog'
+    catalog_url = f'{API_URL}/v2/_catalog'
     catalog_response = requests.get(catalog_url)
     catalog_data = catalog_response.json()
 
@@ -46,7 +46,7 @@ def _registry_image_tags_list(args):
 
     # 为每个仓库获取标签并按仓库分组
     for repo in catalog_data['repositories']:
-        tags_url = f'{REGISTRY_URL}/v2/{repo}/tags/list'
+        tags_url = f'{API_URL}/v2/{repo}/tags/list'
         tags_response = requests.get(tags_url)
         tags_data = tags_response.json()
 
@@ -83,7 +83,7 @@ def do_registry_image_tags(args):
         return _registry_image_tags_list(args)
 
     # 获取标签列表
-    url = f'{REGISTRY_URL}/v2/{args.image}/tags/list'
+    url = f'{API_URL}/v2/{args.image}/tags/list'
     response = requests.get(url)
     data = response.json()
 
@@ -94,7 +94,7 @@ def do_registry_image_tags(args):
             return
 
         # 获取镜像清单
-        manifest_url = f'{REGISTRY_URL}/v2/{args.image}/manifests/{args.tag}'
+        manifest_url = f'{API_URL}/v2/{args.image}/manifests/{args.tag}'
         headers = {'Accept': 'application/vnd.docker.distribution.manifest.v2+json'}
         manifest_response = requests.get(manifest_url, headers=headers)
 

@@ -4,7 +4,7 @@ import os
 import sys
 import argparse
 import importlib
-from .util import args
+from .util import args, env
 from .exc import CommandError
 
 

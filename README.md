@@ -37,15 +37,16 @@ $ cookiecutter gh:cookiecutter-devops/cookiecutter-python-client
 ```sh
 # 列出所有镜像及其标签
 $ python-regsitryclient registry-image-tags
-+--------+--------------+
-| Image  |     Tags     |
-+--------+--------------+
-| ubuntu | 18.04, 14.04 |
-+--------+--------------+
++----------+--------------+
+|  Image   |     Tags     |
++----------+--------------+
+| registry |      2       |
+|  ubuntu  | 18.04, 14.04 |
+
 
 
 # 查看单个镜像的所有标签
-python-regsitryclient registry-image-tags ubuntu
+$ python-regsitryclient registry-image-tags ubuntu
 +-------+
 |  tag  |
 +-------+
@@ -56,11 +57,12 @@ python-regsitryclient registry-image-tags ubuntu
 
 # 查看单个镜像指定tag的大小
 $ python-regsitryclient registry-image-tags ubuntu --tag=18.04 --size
-+--------------+---------------------------+
-|    Image     |            Size           |
-+--------------+---------------------------+
-| ubuntu:18.04 | 26717357 bytes (25.48 MB) |
-+--------------+---------------------------+
++--------------+--------+
+|    Image     |  Size  |
++--------------+--------+
+| ubuntu:18.04 | 25.5MB |
++--------------+--------+
+
 
 
 # 查看单个镜像指定tag的更新时间
@@ -78,9 +80,8 @@ $ python-regsitryclient registry-image-tags ubuntu --tag=18.04 --size --update
 |    Image     |             Value              |
 +--------------+--------------------------------+
 | Last Updated | 2023-05-30T09:32:09.432301537Z |
-| ubuntu:18.04 |   26717357 bytes (25.48 MB)    |
+| ubuntu:18.04 |             25.5MB             |
 +--------------+--------------------------------+
-
 ```
 
 
