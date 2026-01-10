@@ -15,6 +15,23 @@ def args(*args, **kwargs):
     return _decorator
 
 
+def make_size_human_readable(size):
+    suffix = ["B", "kB", "MB", "GB", "TB", "PB", "EB", "ZB"]
+    base = 1024.0
+    index = 0
+
+    if size is None:
+        size = 0
+    while size >= base:
+        index = index + 1
+        size = size / base
+
+    padded = "%.1f" % size
+    stripped = padded.rstrip("0").rstrip(".")
+
+    return "%s%s" % (stripped, suffix[index])
+
+
 def pretty_choice_list(l):
     return ", ".join("'%s'" % i for i in l)
 

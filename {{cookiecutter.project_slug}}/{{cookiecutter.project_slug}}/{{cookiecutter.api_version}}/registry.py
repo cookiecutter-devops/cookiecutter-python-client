@@ -5,7 +5,7 @@ import requests
 import json
 import requests
 from datetime import datetime
-from {{cookiecutter.package_name}}.util import args, print_list, print_dict
+from {{cookiecutter.package_name}}.util import args, print_list, print_dict,make_size_human_readable
 
 REGISTRY_URL = 'http://localhost:5000'
 
@@ -41,6 +41,9 @@ def _registry_image_tags_list(args):
         print("No repositories found in the registry.")
         return
 
+    # 收集所有仓库的数据
+    all_images_data = {}
+
     # 为每个仓库获取标签并按仓库分组
     for repo in catalog_data['repositories']:
         tags_url = f'{REGISTRY_URL}/v2/{repo}/tags/list'
@@ -48,15 +51,17 @@ def _registry_image_tags_list(args):
         tags_data = tags_response.json()
 
         if 'tags' in tags_data and tags_data['tags']:
-            # 使用print_dict显示镜像和其所有标签
+            # 将标签添加到总数据中
             tags_str = ', '.join(tags_data['tags'])
-            image_info = {
-                repo: tags_str
-            }
-            print_dict(image_info, headers=['Image', 'Tags'], property='Image')
+            all_images_data[repo] = tags_str
         else:
-            print(f"No tags found for image '{repo}'.")
+            all_images_data[repo] = ""
 
+    # 使用print_dict一次性输出所有数据
+    if all_images_data:
+        print_dict(all_images_data, headers=['Image', 'Tags'], property='Image')
+    else:
+        print("No repositories found in the registry.")
 
 @args('image', nargs='?', metavar='<IMAGE>', help='Image name to list tags for (optional, omit to list all images)')
 @args('--size', action='store_true', help='Show image size for the tag')
@@ -102,18 +107,21 @@ def do_registry_image_tags(args):
         # 计算总大小
         total_size = sum(layer['size'] for layer in manifest_data.get('layers', []))
 
+        # 使用 make_size_human_readable 函数格式化大小
+        readable_size = make_size_human_readable(total_size)
+
         # 获取更新时间
         update_time = _get_image_update_time(args.image, args.tag)
         # 打印结果 - 使用print_dict美化输出
         if args.size and args.update:
             image_info = {
-                f"{args.image}:{args.tag}": f"{total_size} bytes ({total_size / (1024 * 1024):.2f} MB)",
+                f"{args.image}:{args.tag}": readable_size,
                 "Last Updated": update_time or "Unknown"
             }
             print_dict(image_info, headers=['Image', 'Value'], property='Image')
         elif args.size:
             image_info = {
-                f"{args.image}:{args.tag}": f"{total_size} bytes ({total_size / (1024 * 1024):.2f} MB)"
+                f"{args.image}:{args.tag}": readable_size
             }
             print_dict(image_info, headers=['Image', 'Size'], property='Image')
         elif args.update:
