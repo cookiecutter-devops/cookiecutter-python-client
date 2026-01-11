@@ -4,8 +4,11 @@ import os
 import sys
 import argparse
 import importlib
-from .util import args, env
-from .exc import CommandError
+import logging
+import utils
+import exc
+
+logger = logging.getLogger(__name__)
 
 
 class HelpAction(argparse._HelpAction):
@@ -37,6 +40,13 @@ class shellmain(object):
             help="Show this help message and exit",
         )
 
+        parser.add_argument(
+            "--debug",
+            default=False,
+            action="store_true",
+            help="Defaults to env[%(env)s]." % {"env": "DEBUG"},
+        )
+
         return parser
 
     def import_modules(self, path):
@@ -44,7 +54,7 @@ class shellmain(object):
         modules = sys.modules[path]
         return modules
 
-    def _find_action(self, subparser, sub_module):
+    def _find_actions(self, subparser, sub_module):
         """Find and register actions from a given module."""
         for fn_name in (
             func for func in dir(sub_module) if func.startswith("do_")
@@ -92,8 +102,8 @@ class shellmain(object):
                 module_path = "{}.{}".format(api_module_path, module_name)
                 sub_module = self.import_modules(module_path)
 
-                # Process all do_* functions in the module using _find_action
-                self._find_action(subparsers, sub_module)
+                # Process all do_* functions in the module using _find_actions
+                self._find_actions(subparsers, sub_module)
 
         return parser
 
@@ -101,7 +111,7 @@ class shellmain(object):
         subcommand_parser = self.get_subcommand_parser()
         return subcommand_parser.parse_args(argv)
 
-    @args(
+    @utils.args(
         "command",
         metavar="<subcommand>",
         nargs="?",
@@ -113,11 +123,21 @@ class shellmain(object):
             if args.command in self.subcommands:
                 self.subcommands[args.command].print_help()
             else:
-                raise CommandError(
+                raise exc.CommandError(
                     "'%s' is not a valid subcommand" % args.command
                 )
         else:
             self.parser.print_help()
+
+    def setup_debugging(self, debug):
+        if not debug:
+            return
+
+        streamhandler = logging.StreamHandler()
+        streamformat = "%(levelname)s (%(module)s:%(lineno)d) %(message)s"
+        streamhandler.setFormatter(logging.Formatter(streamformat))
+        logger.setLevel(logging.DEBUG)
+        logger.addHandler(streamhandler)
 
     def main(self, argv):
         if argv is None:
@@ -141,10 +161,16 @@ class shellmain(object):
             print(f"Error: {e}")
             sys.exit(2)
 
+        # 设置调试模式
+        self.setup_debugging(
+            parsed.debug if hasattr(parsed, "debug") else False
+        )
+
         if not hasattr(parsed, "func"):
             parser.print_help()
             sys.exit(2)
 
+        # 调用子命令函数
         try:
             parsed.func(parsed)
         except Exception as e:

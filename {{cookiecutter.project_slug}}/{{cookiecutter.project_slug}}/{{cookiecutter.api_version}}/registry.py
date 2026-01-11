@@ -5,10 +5,10 @@ import requests
 import json
 import requests
 from datetime import datetime
-from {{cookiecutter.package_name}}.util import env, args, print_list, print_dict,make_size_human_readable
+from {{cookiecutter.package_name}} import utils
 
 
-API_URL = env("API_URL", default="http://localhost:5000")
+API_URL = utils.env("API_URL", default="http://localhost:5000")
 
 def _get_image_update_time(image_name, tag):
     """
@@ -59,14 +59,14 @@ def _registry_image_tags_list(args):
 
     # 使用print_dict一次性输出所有数据
     if all_images_data:
-        print_dict(all_images_data, headers=['Image', 'Tags'], property='Image')
+        utils.print_dict(all_images_data, headers=['Image', 'Tags'], property='Image')
     else:
         print("No repositories found in the registry.")
 
-@args('image', nargs='?', metavar='<IMAGE>', help='Image name to list tags for (optional, omit to list all images)')
-@args('--size', action='store_true', help='Show image size for the tag')
-@args('--update', action='store_true', help='Show last update time for the tag')
-@args('--tag', metavar='<TAG>', help='Specific tag to inspect (required for --size and --update)')
+@utils.args('image', nargs='?', metavar='<IMAGE>', help='Image name to list tags for (optional, omit to list all images)')
+@utils.args('--size', action='store_true', help='Show image size for the tag')
+@utils.args('--update', action='store_true', help='Show last update time for the tag')
+@utils.args('--tag', metavar='<TAG>', help='Specific tag to inspect (required for --size and --update)')
 def do_registry_image_tags(args):
     """List tags for a specific image or show details for a specific tag"""
     # 验证参数
@@ -108,7 +108,7 @@ def do_registry_image_tags(args):
         total_size = sum(layer['size'] for layer in manifest_data.get('layers', []))
 
         # 使用 make_size_human_readable 函数格式化大小
-        readable_size = make_size_human_readable(total_size)
+        readable_size = utils.make_size_human_readable(total_size)
 
         # 获取更新时间
         update_time = _get_image_update_time(args.image, args.tag)
@@ -118,23 +118,23 @@ def do_registry_image_tags(args):
                 f"{args.image}:{args.tag}": readable_size,
                 "Last Updated": update_time or "Unknown"
             }
-            print_dict(image_info, headers=['Image', 'Value'], property='Image')
+            utils.print_dict(image_info, headers=['Image', 'Value'], property='Image')
         elif args.size:
             image_info = {
                 f"{args.image}:{args.tag}": readable_size
             }
-            print_dict(image_info, headers=['Image', 'Size'], property='Image')
+            utils.print_dict(image_info, headers=['Image', 'Size'], property='Image')
         elif args.update:
             image_info = {
                 f"{args.image}:{args.tag}": update_time or "Unknown"
             }
-            print_dict(image_info, headers=['Image', 'Last Updated'], property='Image')
+            utils.print_dict(image_info, headers=['Image', 'Last Updated'], property='Image')
         else:
             # 只显示镜像名
             image_info = {
                 f"{args.image}:{args.tag}": ""
             }
-            print_dict(image_info, headers=['Image', 'Info'], property='Image')
+            utils.print_dict(image_info, headers=['Image', 'Info'], property='Image')
 
         return
 
@@ -146,6 +146,6 @@ def do_registry_image_tags(args):
                 self.tag = tag
 
         tags = [Tag(tag) for tag in data['tags']]
-        print_list(tags, ['tag'])
+        utils.print_list(tags, ['tag'])
     else:
         print(f"No tags found for image '{args.image}'.")
