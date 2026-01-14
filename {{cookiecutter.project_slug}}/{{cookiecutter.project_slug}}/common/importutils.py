@@ -46,8 +46,7 @@ def import_module(import_str):
 
 
 def import_versioned_module(version, submodule=None):
-    # module = '{{cookiecutter.package_name}}.v%s' % version
-    module = '{{cookiecutter.package_name}}.%s' % version
+    module = '{{cookiecutter.package_name}}.v%s' % version
     if submodule:
         module = '.'.join((module, submodule))
     return import_module(module)

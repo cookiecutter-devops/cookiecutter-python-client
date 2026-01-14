@@ -17,7 +17,7 @@ from {{cookiecutter.package_name}}.common import exceptions as exc
 from {{cookiecutter.package_name}}.common import importutils
 from {{cookiecutter.package_name}}.common import strutils
 
-DEFAULT_API_VERSION = {{cookiecutter.api_version}}
+DEFAULT_API_VERSION = "{{cookiecutter.api_version}}".strip("v")
 
 logger = logging.getLogger(__name__)
 
