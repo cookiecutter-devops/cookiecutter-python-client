@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import re
-from {{cookiecutter.package_name}}.common import cliutils
-from {{cookiecutter.package_name}}.common import exceptions as exp
+from {{cookiecutter.project_slug}}.common import cliutils
+from {{cookiecutter.project_slug}}.common import exceptions as exp
 
 
 @cliutils.arg('--detail', '-d', dest="detail", action="store_true",
@@ -54,7 +54,7 @@ def do_image_show(cs, args):
     """
     if not getattr(args, 'image', None):
         print("Usage: image-show <image>")
-        print("See '{{cookiecutter.package_name}} help image-show' for help on this command.")
+        print("See '{{cookiecutter.project_slug}} help image-show' for help on this command.")
         return
 
     try:

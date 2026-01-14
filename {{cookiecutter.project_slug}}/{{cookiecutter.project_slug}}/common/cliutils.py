@@ -14,9 +14,9 @@ import prettytable
 import six
 from six import moves
 
-from {{cookiecutter.package_name}}.common import exceptions
-from {{cookiecutter.package_name}}.common import strutils
-from {{cookiecutter.package_name}}.common import uuidutils
+from {{cookiecutter.project_slug}}.common import exceptions
+from {{cookiecutter.project_slug}}.common import strutils
+from {{cookiecutter.project_slug}}.common import uuidutils
 
 
 def validate_args(fn, *args, **kwargs):

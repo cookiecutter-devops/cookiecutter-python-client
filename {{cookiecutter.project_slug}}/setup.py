@@ -15,7 +15,7 @@ setup(
     install_requires=["requests", "prettytable"],
     entry_points={
         "console_scripts": [
-            "{{cookiecutter.command_name}} = {{cookiecutter.package_name}}.shell:main",
+            "{{cookiecutter.command_name}} = {{cookiecutter.project_slug}}.shell:main",
         ],
     },
     classifiers=[

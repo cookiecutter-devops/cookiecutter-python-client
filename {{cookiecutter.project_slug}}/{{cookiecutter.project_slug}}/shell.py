@@ -8,14 +8,14 @@ import importlib
 import argparse
 import sys
 import pkgutil
-import {{cookiecutter.package_name}}
+import {{cookiecutter.project_slug}}
 import logging
-from {{cookiecutter.package_name}} import client
-from {{cookiecutter.package_name}} import extension
-from {{cookiecutter.package_name}}.common import cliutils
-from {{cookiecutter.package_name}}.common import exceptions as exc
-from {{cookiecutter.package_name}}.common import importutils
-from {{cookiecutter.package_name}}.common import strutils
+from {{cookiecutter.project_slug}} import client
+from {{cookiecutter.project_slug}} import extension
+from {{cookiecutter.project_slug}}.common import cliutils
+from {{cookiecutter.project_slug}}.common import exceptions as exc
+from {{cookiecutter.project_slug}}.common import importutils
+from {{cookiecutter.project_slug}}.common import strutils
 
 DEFAULT_API_VERSION = "{{cookiecutter.api_version}}".strip("v")
 
@@ -78,8 +78,8 @@ class Shellmain(object):
 
     def get_base_parser(self, argv):
         parser = ClientArgumentParser(
-            prog='{{cookiecutter.package_name}}',
-            description=__doc__.strip() if __doc__ else "{{cookiecutter.package_name}} shell",
+            prog='{{cookiecutter.project_slug}}',
+            description=__doc__.strip() if __doc__ else "{{cookiecutter.project_slug}} shell",
             epilog='Run "{{cookiecutter.command_name}} help SUBCOMMAND" for help on a subcommand.',
             add_help=False,
             formatter_class=HelpFormatter,
@@ -104,7 +104,7 @@ class Shellmain(object):
             help="Print call timing info.")
 
         parser.add_argument(
-            '--version', action='version', version={{cookiecutter.package_name}}.__version__)
+            '--version', action='version', version={{cookiecutter.project_slug}}.__version__)
 
         parser.add_argument(
             '--os-username',
@@ -282,16 +282,16 @@ class Shellmain(object):
         print("Total: %s seconds" % total)
 
     def _discover_via_python_path(self, version):
-        # 查找了以 python_{{cookiecutter.package_name}}_ext 来结尾的 python 模块
+        # 查找了以 python_{{cookiecutter.project_slug}}_ext 来结尾的 python 模块
         for (module_loader, name, ispkg) in pkgutil.iter_modules():
-            if name.endswith('python_{{cookiecutter.package_name}}_ext'):
+            if name.endswith('python_{{cookiecutter.project_slug}}_ext'):
                 if not hasattr(module_loader, 'load_module'):
                     module_loader = module_loader.find_module(name)
                 module = module_loader.load_module(name)
                 yield name, module
 
     def _discover_via_contrib_path(self, version):
-        # 查找了位于 {{cookiecutter.package_name}}/v2/contrib 下的除 __init__.py 之外的所有py文件
+        # 查找了位于 {{cookiecutter.project_slug}}/v2/contrib 下的除 __init__.py 之外的所有py文件
         module_path = os.path.dirname(os.path.abspath(__file__))
         version_str = "v%s" % version.replace('.', '_')
         ext_path = os.path.join(module_path, version_str, 'contrib')
@@ -302,7 +302,7 @@ class Shellmain(object):
 
             if name == "__init__":
                 continue
-            module_name = "{{cookiecutter.package_name}}.{}.contrib.{}".format(version_str, name)
+            module_name = "{{cookiecutter.project_slug}}.{}.contrib.{}".format(version_str, name)
             try:
                 module = importlib.import_module(module_name)
                 yield name, module
@@ -314,7 +314,7 @@ class Shellmain(object):
         for name, module in itertools.chain(
                 self._discover_via_python_path(version),
                 self._discover_via_contrib_path(version)):
-            extension = {{cookiecutter.package_name}}.extension.Extension(name, module)
+            extension = {{cookiecutter.project_slug}}.extension.Extension(name, module)
             extensions.append(extension)
 
         return extensions

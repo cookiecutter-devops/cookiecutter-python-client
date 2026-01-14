@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from {{cookiecutter.package_name}} import base
+from {{cookiecutter.project_slug}} import base
 
 
 class Controller(base.Manager):

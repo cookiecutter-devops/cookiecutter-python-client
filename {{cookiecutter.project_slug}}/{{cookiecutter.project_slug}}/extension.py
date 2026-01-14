@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
 
-from {{cookiecutter.package_name}} import base
-from {{cookiecutter.package_name}}.common import importutils
+from {{cookiecutter.project_slug}} import base
+from {{cookiecutter.project_slug}}.common import importutils
 
 
 class Extension(base.HookableMixin):

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from {{cookiecutter.package_name}}.common import http
-from {{cookiecutter.package_name}}.{{cookiecutter.api_version }} import images
+from {{cookiecutter.project_slug}}.common import http
+from {{cookiecutter.project_slug}}.{{cookiecutter.api_version }} import images
 
 
 class Client(object):

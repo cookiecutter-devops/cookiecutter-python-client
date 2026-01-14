@@ -6,12 +6,12 @@ import logging
 import json
 from six.moves.urllib.parse import urlparse
 import requests
-from {{cookiecutter.package_name}}.common import exceptions
-from {{cookiecutter.package_name}}.common import utils
+from {{cookiecutter.project_slug}}.common import exceptions
+from {{cookiecutter.project_slug}}.common import utils
 
 
 class HTTPClient(object):
-    USER_AGENT = "{{cookiecutter.package_name}}"
+    USER_AGENT = "{{cookiecutter.project_slug}}"
 
     def __init__(
             self,
