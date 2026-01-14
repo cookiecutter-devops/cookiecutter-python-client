@@ -220,21 +220,21 @@ class Shellmain(object):
         return parser
 
     def do_bash_completion(self, _args):
-        """Print bash completion
+        """Prints arguments for bash-completion.
 
         Prints all of the commands and options to stdout so that the
-        harbor.bash_completion script doesn't have to hard code them.
+        venus.bash_completion script doesn't have to hard code them.
         """
-        commands = list()
-        options = list()
+        commands = set()
+        options = set()
         for sc_str, sc in self.subcommands.items():
-            commands.append(sc_str)
+            commands.add(sc_str)
             for option in sc._optionals._option_string_actions.keys():
-                options.append(option)
+                options.add(option)
+
         commands.remove('bash-completion')
         commands.remove('bash_completion')
-        options.extend(self.parser._option_string_actions.keys())
-        print(' '.join(set(commands + options)))
+        print(' '.join(commands | options))
 
     def _add_bash_completion_subparser(self, subparsers):
         subparser = subparsers.add_parser(
@@ -359,7 +359,7 @@ class Shellmain(object):
         self._run_extension_hooks('__post_parse_args__', args)
 
         # Short-circuit and deal with help right away.
-        if args.func == self.do_help:
+        if not hasattr(args, 'func') or args.func == self.do_help:
             self.do_help(args)
             return 0
         elif args.func == self.do_bash_completion:
@@ -407,7 +407,7 @@ def main():
         argv = [strutils.safe_decode(a) for a in sys.argv[1:]]
         Shellmain().main(argv)
     except KeyboardInterrupt:
-        print("... terminating harbor client", file=sys.stderr)
+        print("... terminating client", file=sys.stderr)
         sys.exit(130)
     except exc.CommandError as e:
         print("CommandError: %s" % e)
