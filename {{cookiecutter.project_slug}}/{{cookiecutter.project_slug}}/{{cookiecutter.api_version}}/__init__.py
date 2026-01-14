@@ -1,1 +1,1 @@
-from {{cookiecutter.package_name}}.{{cookiecutter.api_version}}.client import Client  # noqa
+from {{cookiecutter.project_slug}}.{{cookiecutter.api_version}}.client import Client  # noqa
